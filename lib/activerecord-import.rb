@@ -4,7 +4,8 @@ class ActiveRecord::Base
       establish_connection_without_activerecord_import(*args)
       ActiveSupport.run_load_hooks(:active_record_connection_established, connection_pool)
     end
-    alias_method :establish_connection, :activerecord_import
+    alias establish_connection_without_activerecord_import establish_connection
+    alias establish_connection establish_connection_with_activerecord_import
   end
 end
 
