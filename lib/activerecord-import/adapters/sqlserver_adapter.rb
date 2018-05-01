@@ -24,8 +24,8 @@ module ActiveRecord::Import::SQLServerAdapter
       end
       #run two SQL bulk inserts. One in which we remove the NULL ids and let Sqlserver figure them out
       #the other in which we use the ids as supplied
-      number_of_inserts += super( noidsql.clone, nullids, args ) unless nullids.empty?
-      number_of_inserts += super( sql.clone, suppliedids, args ) unless suppliedids.empty?
+      number_of_inserts += super( noidsql.clone, nullids, args ).length unless nullids.empty?
+      number_of_inserts += super( sql.clone, suppliedids, args ).length unless suppliedids.empty?
     end
     number_of_inserts
   end

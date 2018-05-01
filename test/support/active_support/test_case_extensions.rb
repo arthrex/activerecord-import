@@ -47,15 +47,15 @@ class ActiveSupport::TestCase
     alias_method :context, :describe
     
     def let(name, &blk)
-      values = {}
       define_method(name) do
-        return values[name] if values.has_key?(name)
-        values[name] = instance_eval(&blk)
+        instance_variable_name = "@__let_#{name}"
+        return instance_variable_get(instance_variable_name) if instance_variable_defined?(instance_variable_name)
+        instance_variable_set(instance_variable_name, instance_eval(&blk))
       end
     end
     
     def it(description, &blk)
-      define_method("test: #{name} #{description}", &blk)
+      define_method("test_#{name}_#{description}", &blk)
     end
   end
   

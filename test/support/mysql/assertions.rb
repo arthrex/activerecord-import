@@ -3,29 +3,29 @@ class ActiveSupport::TestCase
     def self.extended(klass)
       klass.instance_eval do
         assertion(:should_not_update_created_at_on_timestamp_columns) do
-          Delorean.time_travel_to("5 minutes from now") do
+          Timecop.freeze Chronic.parse("5 minutes from now") do
             perform_import
-            assert_equal @topic.created_at.to_i, updated_topic.created_at.to_i
-            assert_equal @topic.created_on.to_i, updated_topic.created_on.to_i
+            assert_in_delta @topic.created_at.to_i, updated_topic.created_at.to_i, 1
+            assert_in_delta @topic.created_on.to_i, updated_topic.created_on.to_i, 1
           end
         end
 
         assertion(:should_update_updated_at_on_timestamp_columns) do
           time = Chronic.parse("5 minutes from now")
-          Delorean.time_travel_to(time) do
+          Timecop.freeze time do
             perform_import
-            assert_equal time.to_i, updated_topic.updated_at.to_i
-            assert_equal time.to_i, updated_topic.updated_on.to_i
+            assert_in_delta time.to_i, updated_topic.updated_at.to_i, 1
+            assert_in_delta time.to_i, updated_topic.updated_on.to_i, 1
           end
         end
 
         assertion(:should_not_update_timestamps) do
-          Delorean.time_travel_to("5 minutes from now") do
+          Timecop.freeze Chronic.parse("5 minutes from now") do
             perform_import :timestamps => false
-            assert_equal @topic.created_at.to_i, updated_topic.created_at.to_i
-            assert_equal @topic.created_on.to_i, updated_topic.created_on.to_i
-            assert_equal @topic.updated_at.to_i, updated_topic.updated_at.to_i
-            assert_equal @topic.updated_on.to_i, updated_topic.updated_on.to_i
+            assert_in_delta @topic.created_at.to_i, updated_topic.created_at.to_i, 1
+            assert_in_delta @topic.created_on.to_i, updated_topic.created_on.to_i, 1
+            assert_in_delta @topic.updated_at.to_i, updated_topic.updated_at.to_i, 1
+            assert_in_delta @topic.updated_on.to_i, updated_topic.updated_on.to_i, 1
           end
         end
 
